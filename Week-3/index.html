@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=<device-width>, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // Exercise  3.1
+      function memoize(fnc) {
+        const cache = new Map();
+        return function (...args) {
+          const k = args.toString();
+          if (cache.has(k)) {
+            return cache.get(k);
+          }
+          cache.set(k, fnc(...args));
+          return cache.get(k);
+        };
+      }
+
+      function add(a, b) {
+        return a + b;
+      }
+      //Create a method called memoize such that:
+      const memoizeAdd = memoize(add); //then calling...
+      console.log(memoizeAdd(100, 100)); //returns 200
+      console.log(memoizeAdd(100)); //returns 100
+      console.log(memoizeAdd(100, 200)); //returns 300
+      console.log(memoizeAdd(100, 100)); //returns 200 without computing
+
+
+//***************************************************************************************************************************************************************************************************************************************
+      // Exercise  3.2
+      var car = {
+        registrationNumber: "GA12345",
+        brand: "Toyota",
+
+        displayDetails: function () {
+          console.log(this.registrationNumber + " " + this.brand);
+        },
+      };
+
+      car.displayDetails(); // GA12345 Toyota
+
+      var myCarDetails = car.displayDetails;
+      myCarDetails(); // undefined undefined cs this refers to global object which does not have property it suppose to display
+
+      var myCarDetails = car.displayDetails.bind(car);
+      myCarDetails();
+
+      //The bind() method creates a new function where “this” refers to the parameter in the parenthesis in the above case “car”. This way the bind() method enables calling a function with a specified “this” value.
+
+      //What if we would like to pass a parameter to the displayDetails function? We can use the bind method again. The following argument of the bind() method will provide an argument to the function bind() is called on.
+
+      var car = {
+        registrationNumber: "GA12345",
+        brand: "Toyota",
+        displayDetails: function (ownerName) {
+          console.log(
+            ownerName +
+              ", this is your car: " +
+              this.registrationNumber +
+              " " +
+              this.brand
+          );
+        },
+      };
+
+      var myCarDetails = car.displayDetails.bind(car, "Vivian"); // Vivian, this is your car: GA12345 Toyota
+
+      // call() and apply() methods
+
+      var car = {
+        registrationNumber: "GA12345",
+        brand: "Toyota",
+      };
+
+      function displayDetails(ownerName) {
+        console.log(
+          ownerName +
+            ", this is your car: " +
+            this.registrationNumber +
+            " " +
+            this.brand
+        );
+      }
+
+      displayDetails.apply(car, ["Vivian"]); // Vivian, this is your car: GA12345 Toyota   displayDetails.apply(car, ["Vivian"]); // Vivian, this is your car: GA12345 Toyota
+      displayDetails.call(car, "Vivian"); // Vivian, this is your car: GA12345 Toyota
+
+      // when using the apply() function the parameter must be placed in an array. Call() accepts both an array of parameters and a parameter itself. Both are great tools for borrowing functions in JavaScript.
+
+//*****************************************************************************************************************************************************************************************************************************************************
+      // Exercise  3.3
+
+      function createincrement() {
+        let count = 0;
+        function increment() {
+          count++;
+          //   let message = `Count is ${count}`;
+          //   console.log(message);
+        }
+        let message = `Count is ${count}`;
+        function log() {
+          console.log(message);
+        }
+        return [increment, log];
+      }
+      const [increment, log] = createincrement();
+      increment();
+      increment();
+      increment();
+      log(); // logged  Count is 0
+
+
+//****************************************************************************************************************************************************************************************************************************************************
+
+ // Exercise  3.4
+
+      function createStack() {
+        return {
+          items: [],
+          push: function (item) {
+            this.items?.push(item);
+          },
+          pop: function () {
+            return this.items.pop();
+          },
+        };
+      }
+      const stack = createStack();
+      console.log(stack);
+      stack.push(10);
+      stack.push(5);
+      stack.pop();
+      console.log(stack.items);
+      console.log((stack.items = [10, 100, 1000])); // Encapaulation broken!
+
+      //Refactored code:
+
+      function createStack1() {
+        const items = [];
+        return {
+          push(item) {
+            items.push(item);
+          },
+          pop() {
+            return items.pop();
+          },
+        };
+      }
+      const stack1 = createStack1();
+      stack1.push(10);
+      stack1.push(5);
+      stack1.pop(); // => 5
+      console.log(stack1.items); // => undefined
+      
+    </script>
+  </body>
+</html>
